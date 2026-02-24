@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6ffe1be0ed60264686df1c3df00a9b9, type: 3}
+  m_Name: PlayerMovementStats
+  m_EditorClassIdentifier: Assembly-CSharp::MovementStats
+  WalkSpeed: 10
+  RunSpeed: 15
+  Acceleration: 16
+  Deceleration: 10
+  StopDeceleration: 15
+  JumpForce: 6
+  StrafeControlFactor: 0.6
+  TimeToRun: 0.15
+  MaxAirSpeed: 6
+  AirAcceleration: 13
+  AirControl: 1
+  Gravity: -20
+  MaxSlopeAngle: 45
+  TimeToStop: 0.4
+  SlideFactor: 0.1
+  BrakeFactor: 8
+  MaxStamina: 5
+  StaminaRegenRate: 1
+  DashDistance: 3
+  DashTime: 0.2
+  DashStaminaCost: 1
+  DashCooldown: 0.5
+  WallJumpDistance: 12
+  WallJumpForwardBoost: 6
+  WallJumpHeight: 8
+  WallJumpTime: 0.3
+  FirstWallJumpStaminaCost: 0
+  SecondWallJumpStaminaCost: 0.25

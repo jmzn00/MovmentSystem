@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem.XR;
 
 public class WalkModule : IIntentModule
 {
@@ -12,25 +11,37 @@ public class WalkModule : IIntentModule
     }
     public void UpdateIntent()
     {
-        if (!m_controller.MovmentState.IsGrounded) return;
+        if (!m_controller.MovmentState.IsGrounded)
+            return;
 
         Vector2 input = m_controller.InputState.InputDir;
-        if (input.sqrMagnitude > 0) 
-        {
-            Vector3 moveDir = m_controller.Player.forward * input.y + m_controller.Player.right * input.x;
-            moveDir.Normalize();
+        PlayerStats stats = m_controller.RuntimeStats;
 
-            Vector3 vel = m_controller.Velocity;
-            vel.x = moveDir.x * WalkSpeed;
-            vel.z = moveDir.z * WalkSpeed;  
+        Vector3 vel = m_controller.Velocity;
+        if (input.sqrMagnitude > 0f)
+        {
+            Vector3 wishDir =
+                m_controller.Player.forward * input.y +
+                m_controller.Player.right * input.x;
+
+            wishDir = Vector3.ProjectOnPlane(
+                wishDir,
+                m_controller.MovmentState.GroundNormal
+            ).normalized;            
+            
+
+            Vector3 horizontalVel = wishDir * stats.WalkSpeed;
+
+            vel.x = horizontalVel.x;
+            vel.z = horizontalVel.z;
+
             m_controller.Velocity = vel;
         }
         else
         {
-            Vector3 velocity = m_controller.Velocity;
-            velocity.x = 0;
-            velocity.z = 0;
-            m_controller.Velocity = velocity;
+            vel.x = 0f;
+            vel.z = 0f;
+            m_controller.Velocity = vel;
         }
     }
 }

@@ -9,6 +9,7 @@ public class RotationModule : IIntentModule
     }
     public void UpdateIntent()
     {
-        m_controller.Player.rotation = Quaternion.Euler(0, m_controller.CameraManager.Camera.transform.rotation.eulerAngles.y, 0);
+        m_controller.Player.rotation = Quaternion.Euler(0, 
+            m_controller.CameraManager.Camera.transform.rotation.eulerAngles.y, 0);
     }
 }

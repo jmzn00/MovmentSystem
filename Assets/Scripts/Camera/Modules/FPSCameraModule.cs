@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class FPSCameraModule : ICameraModule
 {
-    public float Sensitivity = 1f;
+    public float Sensitivity = 100f;
     public float PitchClamp = 85f;
 
     private CameraManager m_manager;
@@ -21,10 +21,10 @@ public class FPSCameraModule : ICameraModule
     }
     public void Tick()
     {
-        Vector2 lookInput = m_manager.InputActions.Player.Look.ReadValue<Vector2>();
+        Vector2 lookInput = m_manager.InputState.InputDir;
 
-        m_yaw += lookInput.x * Sensitivity;
-        m_pitch -= lookInput.y * Sensitivity;
+        m_yaw += lookInput.x * Sensitivity * Time.deltaTime;
+        m_pitch -= lookInput.y * Sensitivity * Time.deltaTime;
         m_pitch = Mathf.Clamp(m_pitch, -PitchClamp, PitchClamp);
 
         m_camera.transform.localRotation = Quaternion.Euler(m_pitch, m_yaw, 0f);

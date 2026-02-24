@@ -14,6 +14,16 @@ public class InputManager : MonoBehaviour
             Instance = this;
 
         m_inputActions = new InputSystem_Actions();
+
+        ToggleCursor(CursorLockMode.Locked);
+    }
+    public void ToggleCursor(CursorLockMode mode) 
+    {
+        Cursor.lockState = mode;
+        if (mode == CursorLockMode.Locked)
+            Cursor.visible = false;
+        else
+            Cursor.visible = true;
     }
     private void OnEnable()
     {
