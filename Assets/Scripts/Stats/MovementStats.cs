@@ -38,6 +38,9 @@ public class MovementStats : ScriptableObject
     public float DashStaminaCost = 1f;
     public float DashCooldown = 0.5f;
 
+    [Header("Jump")]
+    public int MaxAirJumps = 1;
+
     [Header("WallJump")]
     public float WallJumpDistance = 8f;
     public float WallJumpInputInfluence = 2f;

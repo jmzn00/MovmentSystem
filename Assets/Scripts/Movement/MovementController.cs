@@ -7,6 +7,7 @@ public struct InputState
     public bool JumpPressed;
     public bool JumpJustPressed;
     public bool DashPressed;
+    public bool DashPressedThisFrame;
     public bool CrouchPressed;
 }
 public struct MovmentState
@@ -116,7 +117,9 @@ public class MovementController : MonoBehaviour
         {
             postProcessModules[i].UpdatePostProcess();
         }
+
         m_inputState.JumpJustPressed = false;
+        m_inputState.DashPressedThisFrame = false;
         #region DebugUI        
         m_posText.text = $"Pos: {transform.position}";
         m_rotText.text = $"Rot: {transform.rotation.eulerAngles}";
@@ -149,7 +152,10 @@ public class MovementController : MonoBehaviour
             m_inputState.JumpPressed = false;
 
         m_inputActions.Player.Dash.performed += ctx =>
+        {
             m_inputState.DashPressed = true;
+            m_inputState.DashPressedThisFrame = true;
+        };            
         m_inputActions.Player.Dash.canceled += ctx =>
             m_inputState.DashPressed = false;
 

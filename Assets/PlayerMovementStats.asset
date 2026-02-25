@@ -28,8 +28,8 @@ MonoBehaviour:
   SlideFactor: 0.1
   BrakeFactor: 8
   MaxStamina: 10
-  StaminaRegenRate: 0.5
-  DashDistance: 3
+  StaminaRegenRate: 2
+  DashDistance: 2
   DashTime: 0.2
   DashStaminaCost: 1
   DashCooldown: 0.5

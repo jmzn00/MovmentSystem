@@ -3,10 +3,7 @@ using UnityEngine;
 public class DashModule : IImpulseModule
 {
     private MovementController m_movementController;
-    private bool m_isDashing;
-    private float m_dashTimer;
-    private Vector3 m_dashVelocity;
-
+    private float m_dashTimer = 0f;
     public DashModule(MovementController movementController)
     {
         m_movementController = movementController;
@@ -19,24 +16,15 @@ public class DashModule : IImpulseModule
         PlayerStats stats = m_movementController.RuntimeStats;
         Vector3 vel = m_movementController.Velocity;
 
-        if (m_isDashing) 
+        if (m_dashTimer < 0.25f)
         {
-            m_dashTimer -= Time.deltaTime;
-
-            m_movementController.Velocity = new Vector3(
-                m_dashVelocity.x,
-                vel.y,
-                m_dashVelocity.z);
-
-            if (m_dashTimer <= 0f)
-                m_isDashing = false;
-
+            m_dashTimer += Time.deltaTime;
             return;
         }
 
-        if (!m_movementController.InputState.DashPressed) return;
-        if (stats.Stamina < stats.DashStaminaCost) return;
-
+        if (!m_movementController.InputState.DashPressedThisFrame) return;
+        if (stats.Stamina < stats.DashStaminaCost) return;                
+        m_dashTimer = 0f;
         Vector2 input = m_movementController.InputState.InputDir;
         Vector3 dashDir;
 
@@ -53,10 +41,10 @@ public class DashModule : IImpulseModule
 
         float dashSpeed = stats.DashDistance / stats.DashTime;
 
-        m_dashVelocity = dashDir * dashSpeed;
-        m_isDashing = true;
+        Vector3 dashVelocity = dashDir * dashSpeed;
+        m_movementController.Velocity += dashVelocity;
 
         stats.Stamina -= stats.DashStaminaCost;
-        m_dashTimer = stats.DashTime;
+        
     }
 }

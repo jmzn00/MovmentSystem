@@ -14,8 +14,6 @@ public class JumpModule : IImpulseModule
     {
         PlayerStats stats = m_controller.RuntimeStats;
 
-        m_coyoteTimer += Time.deltaTime;
-
         if (m_controller.InputState.JumpPressed && m_controller.MovmentState.IsGrounded)
         {
             Vector3 velocity = m_controller.Velocity;

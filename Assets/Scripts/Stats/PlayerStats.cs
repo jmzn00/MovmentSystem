@@ -18,6 +18,7 @@ public class PlayerStats
     public float Gravity;
 
     public float JumpForce;
+    public int MaxAirJumps;
 
     public float MaxAirSpeed;
     public float AirAcceleration;
@@ -27,6 +28,7 @@ public class PlayerStats
     public float DashTime;
     public float DashStaminaCost;
     public float DashCooldown;
+
 
     public float WallJumpDistance;
     public float WallJumpInputInfluence;
@@ -73,5 +75,6 @@ public class PlayerStats
         
 
         WallJumpStaminaCost = so .WallJumpStaminaCost;
+        MaxAirJumps = so.MaxAirJumps;
     }
 }
