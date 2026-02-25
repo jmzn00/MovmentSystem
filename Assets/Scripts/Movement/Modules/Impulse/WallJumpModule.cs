@@ -16,37 +16,45 @@ public class WallJumpModule : IImpulseModule
         if (!CanWallJump()) 
         {            
             return;
-        }      
-        
+        }              
         PlayerStats stats = m_controller.RuntimeStats;
-        float staminaNeeded;
 
-        if (m_wallJumpsPerformed == 0)
-            staminaNeeded = 0f;
-        else 
-        {
-            staminaNeeded = stats.WallJumpStaminaCost
-            + Mathf.Pow(stats.WallJumpStaminaCost,
-            m_wallJumpsPerformed);
-        }
-            
+        float staminaNeeded = GetStaminaCost(stats);            
         if (staminaNeeded > stats.Stamina) return;
 
         m_wallJumpsPerformed++;
         m_controller.RuntimeStats.Stamina -= staminaNeeded;
 
+        Transform player = m_controller.Player;
+
         Vector3 wallNormal = m_controller.MovmentState.ContactNormal;
         Vector3 playerForward = m_controller.Player.forward;
+        Vector2 input = m_controller.InputState.InputDir;
 
-        Vector3 jumpDir = (wallNormal * stats.WallJumpDistance)
-            + (playerForward * stats.WallJumpForwardBoost) 
-            + (Vector3.up * stats.WallJumpHeight);
+        Vector3 inputDir = (player.right * input.x) +
+            (player.forward * input.y);
 
-        m_controller.Velocity = jumpDir;         
+        Vector3 jumpDir =
+            (wallNormal * stats.WallJumpDistance) +
+            (inputDir * stats.WallJumpInputInfluence) +
+            (Vector3.up * stats.WallJumpHeight);
+
+        m_controller.Velocity += jumpDir;
     }
     private bool CanWallJump() 
     {
         return m_controller.MovmentState.OnWall
             && m_controller.InputState.JumpJustPressed;
+    }
+    private float GetStaminaCost(PlayerStats stats) 
+    {
+        if (m_wallJumpsPerformed == 0)
+            return 0f;
+        else
+        {
+            return stats.WallJumpStaminaCost
+            + Mathf.Pow(stats.WallJumpStaminaCost,
+            m_wallJumpsPerformed);
+        }
     }
 }

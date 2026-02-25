@@ -29,9 +29,9 @@ public class PlayerStats
     public float DashCooldown;
 
     public float WallJumpDistance;
-    public float WallJumpForwardBoost;
+    public float WallJumpInputInfluence;
     public float WallJumpHeight;
-    public float WallJumpTime;
+    
     public float FirstWallJumpStaminaCost;
     public float SecondWallJumpStaminaCost;
 
@@ -68,9 +68,9 @@ public class PlayerStats
         DashCooldown = so.DashCooldown;
 
         WallJumpDistance = so.WallJumpDistance;
-        WallJumpForwardBoost = so.WallJumpForwardBoost;
+        WallJumpInputInfluence = so.WallJumpInputInfluence;
         WallJumpHeight = so.WallJumpHeight;
-        WallJumpTime = so.WallJumpTime;
+        
 
         WallJumpStaminaCost = so .WallJumpStaminaCost;
     }

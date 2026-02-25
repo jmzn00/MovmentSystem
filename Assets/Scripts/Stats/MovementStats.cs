@@ -40,9 +40,9 @@ public class MovementStats : ScriptableObject
 
     [Header("WallJump")]
     public float WallJumpDistance = 8f;
-    public float WallJumpForwardBoost = 4f;
+    public float WallJumpInputInfluence = 2f;
     public float WallJumpHeight = 6f;
-    public float WallJumpTime = 0.3f;
+    
     public float WallJumpStaminaCost = 0.25f;
 
 }

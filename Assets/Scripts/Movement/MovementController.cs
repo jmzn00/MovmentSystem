@@ -7,12 +7,14 @@ public struct InputState
     public bool JumpPressed;
     public bool JumpJustPressed;
     public bool DashPressed;
+    public bool CrouchPressed;
 }
 public struct MovmentState
 {
     public bool IsGrounded;
     public Vector3 ContactNormal;
     public bool OnWall;
+    public bool IsSliding;
 }
 
 [RequireComponent(typeof(CharacterController))]
@@ -46,14 +48,17 @@ public class MovementController : MonoBehaviour
     private List<IForceModule> forceModules = new();
     private List<IPostProcessModule> postProcessModules = new();
 
+    [Header("RayCast")]
+    [SerializeField] private LayerMask m_defaultLayer;
+
     [Header("DebugUI")]
     [SerializeField] private TMP_Text m_posText;
     [SerializeField] private TMP_Text m_rotText;
     [SerializeField] private TMP_Text m_velText;
     [SerializeField] private TMP_Text m_staminaText;
-    private float m_maxMagnitude = 0f;
-    private float m_maxMagnitudeResetTimer = 0f;   
-    bool m_resetMaxMagnitude = false;
+
+    [Header("TempVisuals")]
+    [SerializeField] private GameObject m_visualCapsule;
     private void Awake()
     {
         m_runtimeStats = new PlayerStats();
@@ -67,11 +72,12 @@ public class MovementController : MonoBehaviour
         AddModule(new RotationModule(this));
       
         AddModule(new WalkRunModule(this));
-        AddModule(new AirStrafeModule(this));
+        //AddModule(new AirStrafeModule(this));
 
         AddModule(new DashModule(this));
         AddModule(new JumpModule(this));
         AddModule(new WallJumpModule(this));
+        AddModule(new SlideModule(this));
 
         AddModule(new StaminaRegenModule(this));
         AddModule(new GroundFrictionModule(this));
@@ -86,10 +92,9 @@ public class MovementController : MonoBehaviour
         if (module is IPostProcessModule post) postProcessModules.Add(post);
     }
     private void Update()
-    {                
-        m_movmentState.OnWall = false;
+    {           
+        UpdateContact();
         CollisionFlags flags = m_controller.Move(Velocity * Time.deltaTime);
-        m_movmentState.IsGrounded = (flags & CollisionFlags.Below) != 0;        
 
         for (int i = 0; i < environmentModules.Count; i++)
         {
@@ -112,31 +117,21 @@ public class MovementController : MonoBehaviour
             postProcessModules[i].UpdatePostProcess();
         }
         m_inputState.JumpJustPressed = false;
-        #region DebugUI
-        if (Velocity.magnitude > m_maxMagnitude)
-        {
-            m_maxMagnitude = Velocity.magnitude;
-
-            m_resetMaxMagnitude = true;
-            m_maxMagnitudeResetTimer = 0f;
-        }
-
-        if (m_resetMaxMagnitude)
-        {
-            m_maxMagnitudeResetTimer += Time.deltaTime;
-
-            if (m_maxMagnitudeResetTimer >= 5f)
-            {
-                m_maxMagnitude = 0f;
-                m_resetMaxMagnitude = false;
-                m_maxMagnitudeResetTimer = 0f;
-            }
-        }
+        #region DebugUI        
         m_posText.text = $"Pos: {transform.position}";
         m_rotText.text = $"Rot: {transform.rotation.eulerAngles}";
-        m_velText.text = $"Vel: {Velocity.magnitude:F1} || Max: {m_maxMagnitude:F1}";
+        LogSpeed();
         m_staminaText.text = $"Stamina: {RuntimeStats.Stamina:F1}";
-        #endregion
+        #endregion        
+    }
+
+
+    void LogSpeed() 
+    {
+        Vector3 horizontalVelocity = new Vector3(Velocity.x, 0f, Velocity.z);
+        float speed = horizontalVelocity.magnitude;
+
+        m_velText.text = $"Speed: {speed:F1}";
     }
     void BindInputs()
     {
@@ -157,21 +152,94 @@ public class MovementController : MonoBehaviour
             m_inputState.DashPressed = true;
         m_inputActions.Player.Dash.canceled += ctx =>
             m_inputState.DashPressed = false;
+
+        m_inputActions.Player.Crouch.performed += ctx => 
+            m_inputState.CrouchPressed = true;
+        m_inputActions.Player.Crouch.canceled += ctx =>
+            m_inputState.CrouchPressed = false;
     }
     private void OnControllerColliderHit(ControllerColliderHit hit)
-    {
+    {        
         m_movmentState.ContactNormal = hit.normal;
 
-        // Is it a steep surface? (wall)
         float slope = Vector3.Angle(hit.normal, Vector3.up);
-        bool isSteep = slope > m_stats.MaxSlopeAngle; // use MaxSlopeAngle from your stats
+        bool isSteep = slope > m_stats.MaxSlopeAngle;
 
-        // Are we not grounded?
         bool notGrounded = !m_movmentState.IsGrounded;
 
-        // Are we moving roughly towards the wall?
         bool movingIntoWall = Vector3.Dot(Velocity, -hit.normal) > 0f;
 
-        m_movmentState.OnWall = isSteep && notGrounded && movingIntoWall;
+        m_movmentState.OnWall = isSteep && notGrounded && movingIntoWall;        
+    }
+    public void SetSliding(bool value) 
+    {
+        m_movmentState.IsSliding = value;    
+        
+        if (value) 
+        {
+            m_visualCapsule.transform.localRotation = Quaternion.Euler(-90f, 0f, 0f);
+        }
+        else        
+        {
+            m_visualCapsule.transform.localRotation = Quaternion.identity;
+        }
+    }
+
+    private void UpdateContact()
+    {
+        m_movmentState.IsGrounded = m_controller.isGrounded;
+        m_movmentState.OnWall = false;
+
+        if (!m_movmentState.IsGrounded)
+        {
+            GroundedRayCheck();
+        }
+    }
+    private void GroundedRayCheck() 
+    {
+        float rayLength = 0.1f;
+        Vector3 origin = transform.position + m_controller.center;
+
+        if (Physics.SphereCast(origin, m_controller.radius * 0.9f, Vector3.down,
+            out RaycastHit hit, m_controller.height / 2 + rayLength)) 
+        {
+            float slope = Vector3.Angle(hit.normal, Vector3.up);
+            if (slope <= m_stats.MaxSlopeAngle) 
+            {
+                m_movmentState.IsGrounded = true;
+                m_movmentState.ContactNormal = hit.normal;
+            }
+        }
+    }
+    private void OnDrawGizmos()
+    {
+        if (m_controller == null || m_cameraManager == null) return;
+
+        Vector3 origin = transform.position + m_controller.center;
+        Vector3 normal = m_movmentState.ContactNormal;
+
+        // Contact normal
+        if (normal.sqrMagnitude > 0.0001f)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawRay(origin, normal * 2f);
+        }
+
+        // Input direction (world space)
+        Vector3 camForward = m_cameraManager.transform.forward;
+        Vector3 camRight = m_cameraManager.transform.right;
+
+        camForward.y = 0f;
+        camRight.y = 0f;
+
+        Vector3 moveDir =
+            camForward.normalized * m_inputState.InputDir.y +
+            camRight.normalized * m_inputState.InputDir.x;
+
+        if (moveDir.sqrMagnitude > 0.0001f)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawRay(origin, moveDir * 2f);
+        }
     }
 }

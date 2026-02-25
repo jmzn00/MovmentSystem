@@ -10,20 +10,15 @@ public class GravityModule : IEnvironmentModule
     }
 
     public void UpdateEnviroment() 
-    {    
-        PlayerStats stats = m_controller.RuntimeStats;
+    {
         Vector3 velocity = m_controller.Velocity;
 
-        if (!m_controller.MovmentState.IsGrounded)
-        {            
+        if (!m_controller.MovmentState.IsGrounded) 
+        {
+            PlayerStats stats = m_controller.RuntimeStats;            
+
             velocity.y += stats.Gravity * Time.deltaTime;
             m_controller.Velocity = velocity;
         }
-        else
-        {
-            if (m_controller.Velocity.y < 0)
-                m_controller.Velocity = new Vector3(velocity.x, 0, velocity.z);
-        }
-    
     }
 }

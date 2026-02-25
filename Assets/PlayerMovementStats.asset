@@ -24,18 +24,16 @@ MonoBehaviour:
   AirControl: 1
   Gravity: -20
   MaxSlopeAngle: 45
-  TimeToStop: 0.4
+  TimeToStop: 0.125
   SlideFactor: 0.1
   BrakeFactor: 8
-  MaxStamina: 5
-  StaminaRegenRate: 0.25
+  MaxStamina: 10
+  StaminaRegenRate: 0.5
   DashDistance: 3
   DashTime: 0.2
   DashStaminaCost: 1
   DashCooldown: 0.5
-  WallJumpDistance: 12
-  WallJumpForwardBoost: 6
+  WallJumpDistance: 6
+  WallJumpInputInfluence: 4
   WallJumpHeight: 8
-  WallJumpTime: 0.3
-  FirstWallJumpStaminaCost: 0
-  SecondWallJumpStaminaCost: 0.5
+  WallJumpStaminaCost: 0.25
