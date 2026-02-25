@@ -7,8 +7,7 @@ public class MovementStats : ScriptableObject
     public float WalkSpeed = 5f;
     public float RunSpeed = 8f;
     public float Acceleration = 10f;
-    public float Deceleration = 14f;
-    public float StopDeceleration = 20f;    
+    public float Deceleration = 14f; 
     public float JumpForce = 5f;
     public float StrafeControlFactor = 0.6f;
 
@@ -22,9 +21,7 @@ public class MovementStats : ScriptableObject
 
     [Header("Enviroment")]
     public float Gravity = -9.81f;
-    public float MaxSlopeAngle = 45f;
-    
-
+    public float MaxSlopeAngle = 45f;    
 
     [Header("GroundFriction")]
     public float TimeToStop = 0.2f;
@@ -46,6 +43,6 @@ public class MovementStats : ScriptableObject
     public float WallJumpForwardBoost = 4f;
     public float WallJumpHeight = 6f;
     public float WallJumpTime = 0.3f;
-    public float FirstWallJumpStaminaCost = 0f;
-    public float SecondWallJumpStaminaCost = 0.25f;
+    public float WallJumpStaminaCost = 0.25f;
+
 }

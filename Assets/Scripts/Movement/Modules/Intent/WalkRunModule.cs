@@ -10,6 +10,8 @@ public class WalkRunModule : IIntentModule
     }
     public void UpdateIntent() 
     {
+        if (!m_controller.MovmentState.IsGrounded) return;
+
         PlayerStats stats = m_controller.RuntimeStats;
         Transform player = m_controller.Player;
 

@@ -16,7 +16,6 @@ MonoBehaviour:
   RunSpeed: 15
   Acceleration: 16
   Deceleration: 10
-  StopDeceleration: 15
   JumpForce: 6
   StrafeControlFactor: 0.6
   TimeToRun: 0.15
@@ -29,7 +28,7 @@ MonoBehaviour:
   SlideFactor: 0.1
   BrakeFactor: 8
   MaxStamina: 5
-  StaminaRegenRate: 1
+  StaminaRegenRate: 0.25
   DashDistance: 3
   DashTime: 0.2
   DashStaminaCost: 1
@@ -39,4 +38,4 @@ MonoBehaviour:
   WallJumpHeight: 8
   WallJumpTime: 0.3
   FirstWallJumpStaminaCost: 0
-  SecondWallJumpStaminaCost: 0.25
+  SecondWallJumpStaminaCost: 0.5

@@ -34,6 +34,9 @@ public class PlayerStats
     public float WallJumpTime;
     public float FirstWallJumpStaminaCost;
     public float SecondWallJumpStaminaCost;
+
+    public float WallJumpStaminaCost;
+    public float ConsecutiveWallJumpStaminaCostMultiplier;
     public void Initialize(MovementStats so) 
     {
         Stamina = 0f;
@@ -68,7 +71,7 @@ public class PlayerStats
         WallJumpForwardBoost = so.WallJumpForwardBoost;
         WallJumpHeight = so.WallJumpHeight;
         WallJumpTime = so.WallJumpTime;
-        FirstWallJumpStaminaCost = so.FirstWallJumpStaminaCost;
-        SecondWallJumpStaminaCost = so.SecondWallJumpStaminaCost;
+
+        WallJumpStaminaCost = so .WallJumpStaminaCost;
     }
 }

@@ -26,7 +26,7 @@ public class WalkModule : IIntentModule
 
             wishDir = Vector3.ProjectOnPlane(
                 wishDir,
-                m_controller.MovmentState.GroundNormal
+                m_controller.MovmentState.ContactNormal
             ).normalized;            
             
 

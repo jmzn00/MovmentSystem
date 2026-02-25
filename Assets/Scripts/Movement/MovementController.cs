@@ -11,7 +11,7 @@ public struct InputState
 public struct MovmentState
 {
     public bool IsGrounded;
-    public Vector3 GroundNormal;
+    public Vector3 ContactNormal;
     public bool OnWall;
 }
 
@@ -65,13 +65,13 @@ public class MovementController : MonoBehaviour
         BindInputs();
 
         AddModule(new RotationModule(this));
-
-        //AddModule(new WalkModule(this));        
+      
         AddModule(new WalkRunModule(this));
+        AddModule(new AirStrafeModule(this));
+
         AddModule(new DashModule(this));
         AddModule(new JumpModule(this));
         AddModule(new WallJumpModule(this));
-        //AddModule(new AirStrafeModule(this));
 
         AddModule(new StaminaRegenModule(this));
         AddModule(new GroundFrictionModule(this));
@@ -134,7 +134,7 @@ public class MovementController : MonoBehaviour
         }
         m_posText.text = $"Pos: {transform.position}";
         m_rotText.text = $"Rot: {transform.rotation.eulerAngles}";
-        m_velText.text = $"Vel: {Velocity.magnitude} || Max: {m_maxMagnitude}";
+        m_velText.text = $"Vel: {Velocity.magnitude:F1} || Max: {m_maxMagnitude:F1}";
         m_staminaText.text = $"Stamina: {RuntimeStats.Stamina:F1}";
         #endregion
     }
@@ -158,10 +158,9 @@ public class MovementController : MonoBehaviour
         m_inputActions.Player.Dash.canceled += ctx =>
             m_inputState.DashPressed = false;
     }
-    private float MinGroundNormalY => Mathf.Cos(m_stats.MaxSlopeAngle * Mathf.Deg2Rad);
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        m_movmentState.GroundNormal = hit.normal;
+        m_movmentState.ContactNormal = hit.normal;
 
         // Is it a steep surface? (wall)
         float slope = Vector3.Angle(hit.normal, Vector3.up);

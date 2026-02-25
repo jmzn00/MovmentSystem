@@ -3,6 +3,7 @@ using UnityEngine;
 public class JumpModule : IImpulseModule
 {
     private readonly MovementController m_controller;
+    private float m_coyoteTimer = 0f;
 
     public JumpModule(MovementController controller)
     {
@@ -13,11 +14,17 @@ public class JumpModule : IImpulseModule
     {
         PlayerStats stats = m_controller.RuntimeStats;
 
+        m_coyoteTimer += Time.deltaTime;
+
         if (m_controller.InputState.JumpPressed && m_controller.MovmentState.IsGrounded)
         {
             Vector3 velocity = m_controller.Velocity;
             velocity.y = stats.JumpForce;
             m_controller.Velocity = velocity;
         }
+    }
+    bool CanJump() 
+    {
+        return true;
     }
 }
